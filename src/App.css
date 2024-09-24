@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Carter+One&family=Pacifico&family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+@tailwind components;
+@tailwind base;
+@tailwind utilities;
+
+/* Fuentes tipograficas */
+.pacifico {
+  font-family: 'Pacifico', cursive;
+}
+
+.carter {
+  font-family: 'Carter One', cursive;
+}
+
+.sans-pro {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.bg-login-form {
+  background-color: #0b3264d3;
+}
+
+.text-cta-azul {
+  color: #012758;
+}
+
+.texture {
+  background-color: #094799;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23090447' fill-opacity='0.4' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.shadow-inset:focus {
+  box-shadow: 0px 0px 10px 0px rgba(0, 4, 255, 0.61) inset;
+-webkit-box-shadow: 0px 0px 10px 0px rgba(0, 4, 255, 0.61) inset;
+-moz-box-shadow: 0px 0px 10px 0px rgba(0, 4, 255, 0.61) inset;
+}
+
+.separator {
+  border-bottom-left-radius: 50% 15%;
+  border-bottom-right-radius: 50% 15%;
+  background-color: #092850d3;
+}
