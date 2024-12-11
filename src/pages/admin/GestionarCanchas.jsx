@@ -11,6 +11,14 @@ const GestionarCanchas = () => {
   const [alert, setAlert] = useState(null);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [canchaEditar, setCanchaEditar] = useState(null);
+  const [valueNroCancha, setValueNroCancha] = useState("");
+  const [valuePrecio, setValuePrecio] = useState("");
+
+  const filtroCanchas = [...canchas].filter((cancha) =>
+    String(`${cancha.nro_cancha} ${cancha.precio}`).includes(
+      `${valueNroCancha} ${valuePrecio}`
+    )
+  );
 
   useEffect(() => {
     let timer;
@@ -27,8 +35,21 @@ const GestionarCanchas = () => {
       <HeaderAdmin titulo="Gestionar canchas" />
       <div className="w-4/5 mx-auto">
         {alert && <AlertColors alert={alert} />}
-        <div className="w-full py-5 flex justify-between">
-          <InputFilterCanchas />
+        <div className="w-full py-5 flex flex-col md:flex-row justify-between">
+          <div className="flex flex-col md:flex-row gap-2">
+            <InputFilterCanchas
+              value={valueNroCancha}
+              setValue={setValueNroCancha}
+              isCancha={true}
+            />
+
+            {/* Filtro por precio */}
+            <InputFilterCanchas
+              value={valuePrecio}
+              setValue={setValuePrecio}
+              isCancha={false}
+            />
+          </div>
           <DrawerCrearCancha
             openDrawer={openDrawer}
             setOpenDrawer={setOpenDrawer}
@@ -43,6 +64,7 @@ const GestionarCanchas = () => {
           setOpenDrawer={setOpenDrawer}
           canchas={canchas}
           reservandoTurno={false}
+          filtroCanchas={filtroCanchas}
         />
       </div>
     </div>

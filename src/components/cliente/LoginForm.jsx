@@ -2,6 +2,8 @@ import { Typography } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../context/AuthProvider";
+import { useState } from "react";
+import { notifyError } from "../../libs/funciones";
 
 const LoginForm = ({ isRegister, setIsRegister, setAlert }) => {
   const {
@@ -13,15 +15,26 @@ const LoginForm = ({ isRegister, setIsRegister, setAlert }) => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     try {
       const respuesta = await login(data);
+      if (!respuesta.modulos || respuesta.modulos.length === 0) {
+        notifyError("No tienes permisos asignados para acceder al sistema.");
+      }
     } catch (error) {
-      console.log(error)
+      const mensajeError =
+        error.response && error.response.data.error
+          ? error.response.data.error
+          : "Error al iniciar sesión. Por favor, intenta nuevamente.";
       setAlert({
         color: "red",
-        message: error.response.data.error
-      })
+        message: mensajeError,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -87,10 +100,13 @@ const LoginForm = ({ isRegister, setIsRegister, setAlert }) => {
 
         <div className="flex flex-col items-center justify-between">
           <button
-            className="carter w-full bg-sbc-yellow hover:bg-yellow-600 text-cta-azul font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text text-lg"
+            disabled={isSubmitting}
+            className={`carter w-full bg-sbc-yellow hover:bg-yellow-600 text-cta-azul font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text text-lg ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             type="submit"
           >
-            Iniciar Sesión
+            {isSubmitting ? "Procesando..." : "Iniciar Sesión"}
           </button>
           <Typography color="white" className="mt-4 text-center font-normal">
             ¿No tienes una cuenta?{" "}

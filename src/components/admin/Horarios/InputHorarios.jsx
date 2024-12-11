@@ -6,7 +6,7 @@ export function InputHorarios({type, value, onChange}) {
   };
   return (
     <div className="w-full">
-      <Input label={type} type="time" step="1" value={value} onChange={handleChange} />
+      <Input label={type} type="time" value={value} onChange={handleChange} />
     </div>
   );
 }

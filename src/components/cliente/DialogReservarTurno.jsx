@@ -25,6 +25,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { useReservas } from "../../context/ReservasProvider";
 import { AlertColors } from "../Alert";
+import { notifySuccess } from "../../libs/funciones";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -43,18 +44,21 @@ export function DialogReservarTurno({ openDialog, setOpenDialog, slotInfo }) {
     };
     try {
       const respuesta = await crearReserva(dataReserva);
-      setAlert({color:green, message: respuesta.message});
-      return handleOpen();
+      notifySuccess(respuesta.message);
+      handleOpen()
+  
+      return () => clearTimeout(timer);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
         // Si el mensaje de error ya es un string, simplemente lo asignamos directamente
-        const errorMsg = typeof error.response.data.errors === "string"
-          ? error.response.data.errors // Si es un string, lo usamos directamente
-          : Object.values(error.response.data.errors).flat().join(", "); // Si no, seguimos con el proceso habitual
-    
+        const errorMsg =
+          typeof error.response.data.errors === "string"
+            ? error.response.data.errors // Si es un string, lo usamos directamente
+            : Object.values(error.response.data.errors).flat().join(", "); // Si no, seguimos con el proceso habitual
+
         return setAlert({ message: errorMsg, color: "red" });
       }
-      returnsetAlert({
+      return setAlert({
         message: "Hubo un error al procesar la reserva",
         color: "red",
       });
@@ -65,10 +69,9 @@ export function DialogReservarTurno({ openDialog, setOpenDialog, slotInfo }) {
     const timer = setTimeout(() => {
       setAlert(null);
     }, 3000);
-  
+
     return () => clearTimeout(timer);
   }, [alert]);
-  
 
   const handleOpen = () => setOpenDialog(!openDialog);
 
@@ -76,7 +79,7 @@ export function DialogReservarTurno({ openDialog, setOpenDialog, slotInfo }) {
     <>
       <Dialog size="sm" open={openDialog} handler={handleOpen}>
         <DialogHeader className="relative m-0 block p-6">
-        {alert && <AlertColors alert={alert}/>}
+          {alert && <AlertColors alert={alert} />}
           <Typography variant="h4" color="blue-gray">
             ¿Deseas reservas el turno?
           </Typography>
@@ -150,10 +153,10 @@ export function DialogReservarTurno({ openDialog, setOpenDialog, slotInfo }) {
                   {`Email: ${slotInfo.email}`}
                 </Typography>
                 <Typography color="gray" className="font-normal text-gray-600">
-                  {`DNI: ${slotInfo.dni}`}
+                  {`DNI: ${slotInfo.dni ? slotInfo.dni : "-"}`}
                 </Typography>
                 <Typography color="gray" className="font-normal text-gray-600">
-                  {`Celular: ${slotInfo.nro_celular}`}
+                  {`Celular: ${slotInfo.nro_celular? slotInfo.nro_celular : "-"}`}
                 </Typography>
               </TimelineBody>
             </TimelineItem>

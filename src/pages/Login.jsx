@@ -4,20 +4,24 @@ import RegisterForm from "../components/cliente/RegisterForm";
 import { AlertColors } from "../components/Alert";
 import { useAuth } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { rutaGeneral, rutaGeneralAdmin } from "../libs/constantes";
 
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [alert, setAlert] = useState(null);
   const navigate = useNavigate();
-  const { user, errorAuth, isLoading } = useAuth();
+  const { user, modulos, errorAuth, isLoading } = useAuth();
 
-  // Redirige al usuario basado en su rol después de autenticarse
   useEffect(() => {
-    // if (errorAuth) return navigate("/");
-    if (user?.tipo_usuario === "admin") return navigate(rutaGeneralAdmin);
-    if (user?.tipo_usuario === "cliente") return navigate(rutaGeneral);
-  }, [user, navigate]);
+    if (!user || !modulos || modulos.length === 0) return; // Solo redirigir si hay usuario y módulos
+
+    // Redirigir al primer módulo disponible
+    const firstModuleRoute = `/dashboard/${modulos[0].nombre
+      .toLowerCase()
+      .replace(/ /g, "-")}`;
+    if (window.location.pathname !== firstModuleRoute) {
+      navigate(firstModuleRoute);
+    }
+  }, [user, modulos, navigate]);
 
   useEffect(() => {
     let timer;
@@ -29,9 +33,10 @@ const Login = () => {
     return () => clearTimeout(timer);
   }, [alert]);
 
-  // if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <div>Cargando...</div>;
+
   return (
-    <div className=" bg-gradient-to-b from-sbc-blue to-blue-600 min-h-screen texture">
+    <div className="bg-gradient-to-b from-sbc-blue to-blue-600 min-h-screen texture">
       <div className="pt-6 px-8 pb-4 mb-4 w-full mx-auto shadow-md separator">
         <h2 className="text-2xl text-center text-yellow-300 carter separator-text">
           FUT DRAFT
@@ -47,7 +52,6 @@ const Login = () => {
       </div>
       {alert && (
         <div className="w-2/4 mx-auto">
-          {" "}
           <AlertColors alert={alert} />
         </div>
       )}

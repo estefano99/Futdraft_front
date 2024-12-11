@@ -8,6 +8,11 @@ import {
 } from "@material-tailwind/react";
 import { useForm } from "react-hook-form";
 import { useCanchas } from "../../../context/CanchasProvider";
+import { useAuth } from "../../../context/AuthProvider";
+import {
+  accionesDisponibles,
+  tienePermiso,
+} from "../../../libs/PermisosBotones";
 
 export function DrawerCrearCancha({
   setAlert,
@@ -17,6 +22,12 @@ export function DrawerCrearCancha({
   setCanchaEditar,
 }) {
   const { crearCancha, editarCancha } = useCanchas();
+  const { accionesUsuarioDisponibles } = useAuth();
+
+  const puedeCrearCancha = tienePermiso(
+    accionesUsuarioDisponibles,
+    accionesDisponibles.CREAR_CANCHA
+  );
 
   const {
     register,
@@ -64,7 +75,7 @@ export function DrawerCrearCancha({
         });
       }
 
-      const respuesta = await crearCancha({
+      await crearCancha({
         nro_cancha: data.nro_cancha,
         precio: data.precio,
       });
@@ -88,7 +99,16 @@ export function DrawerCrearCancha({
 
   return (
     <>
-      <Button color="blue" className="w-1/4" onClick={handleOpenDrawer}>
+      <Button
+        color="blue"
+        disabled={!puedeCrearCancha}
+        className={
+          !puedeCrearCancha
+            ? "w-full mt-4 md:mt-0 md:w-1/4 opacity-50 cursor-not-allowed"
+            : "w-full mt-4 md:mt-0 md:w-1/4"
+        }
+        onClick={handleOpenDrawer}
+      >
         Crear Cancha
       </Button>
       <Drawer

@@ -1,32 +1,93 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { rutaGestionarCanchas, rutaReservarTurno, rutaGeneralAdmin } from "../../../libs/constantes";
+import { rutaReservarTurno } from "../../../libs/constantes";
+import { useAuth } from "../../../context/AuthProvider";
+import ModalEliminarCancha from "./ModalEliminarCancha";
+import {
+  accionesDisponibles,
+  tienePermiso,
+} from "../../../libs/PermisosBotones";
 
 //! Este componente se reutiliza en GESTIONAR CANCHAS DEL ADMIN y Reservas Turnos del cliente, y cumple diferente funciones.
-const Canchas = ({ canchas = [], setOpenDrawer = () => {}, setCanchaEditar = () => {}, reservandoTurno }) => {
+const Canchas = ({
+  canchas = [],
+  setOpenDrawer = () => {},
+  setCanchaEditar = () => {},
+  reservandoTurno,
+  filtroCanchas = [],
+}) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [modal, setModal] = useState(false);
+  const [canchaEliminar, setCanchaEliminar] = useState(null);
+  const { accionesUsuarioDisponibles } = useAuth();
 
-  const handleSeleccionarCancha = (cancha) => {
+  const [puedeSeleccionarCancha, setPuedeSeleccionarCancha] = useState(false);
+  const [puedeEditarCancha, setPuedeEditarCancha] = useState(false);
+  const [puedeEliminarCancha, setPuedeEliminarCancha] = useState(false);
+
+  const handleEditarCancha = (cancha) => {
     if (!reservandoTurno) {
       setCanchaEditar(cancha);
       setOpenDrawer(true);
       return;
     }
-
-    if (reservandoTurno) {
-      navigate(`${rutaReservarTurno}/${cancha.id}/${cancha.nro_cancha}/${cancha.precio}`);
-    }
-
   };
+
+  const handleReservarTurno = (cancha) => {
+    navigate(
+      `${rutaReservarTurno}/${cancha.id}/${cancha.nro_cancha}/${cancha.precio}/${user.id}`
+    );
+  };
+
+  const handleEliminarCancha = (cancha) => {
+    setModal(true);
+    setCanchaEliminar(cancha);
+  };
+
+  useEffect(() => {
+    // Calcular permisos para canchas
+    const seleccionarCancha = tienePermiso(
+      accionesUsuarioDisponibles,
+      accionesDisponibles.SELECCIONAR_CANCHA
+    );
+    const editarCancha = tienePermiso(
+      accionesUsuarioDisponibles,
+      accionesDisponibles.EDITAR_CANCHA
+    );
+    const eliminarCancha = tienePermiso(
+      accionesUsuarioDisponibles,
+      accionesDisponibles.ELIMINAR_CANCHA
+    );
+
+    // Actualizar los estados de los permisos
+    setPuedeSeleccionarCancha(seleccionarCancha);
+    setPuedeEditarCancha(editarCancha);
+    setPuedeEliminarCancha(eliminarCancha);
+  }, [accionesUsuarioDisponibles]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {canchas.length > 0 ? (
-        canchas.map((cancha) => (
+      {modal && (
+        <ModalEliminarCancha
+          modal={modal}
+          setModal={setModal}
+          canchaEliminar={canchaEliminar}
+        />
+      )}
+      {Array.isArray(filtroCanchas) && filtroCanchas.length > 0 ? (
+        filtroCanchas.map((cancha) => (
           <div
-            className="h-48 bg-green-700 text-white hover:bg-green-500 cursor-pointer"
+            className={`flex flex-col justify-between h-48 bg-green-700 text-white ${
+              !puedeSeleccionarCancha && reservandoTurno
+                ? "pointer-events-none opacity-50"
+                : "cursor-pointer hover:bg-green-500"
+            }`}
+            onClick={() => {
+              if (reservandoTurno && puedeSeleccionarCancha)
+                handleReservarTurno(cancha);
+            }}
             key={cancha.id}
-            onClick={() => handleSeleccionarCancha(cancha)}
           >
             <ul className="h-full flex flex-col justify-center items-center font-bold text-xl">
               <li>
@@ -45,12 +106,44 @@ const Canchas = ({ canchas = [], setOpenDrawer = () => {}, setCanchaEditar = () 
                 </span>
               </li>
             </ul>
+            {!reservandoTurno && (
+              <div className="flex justify-center items-center gap-5 bg-green-800 px-4 py-2">
+                <button
+                  disabled={!puedeEditarCancha}
+                  className={`text-sm md:text-base bg-blue-500 hover:bg-blue-400 text-white font-bold py-1 px-3 rounded ${
+                    !puedeEditarCancha ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Evita activar el onClick del contenedor
+                    handleEditarCancha(cancha);
+                  }}
+                >
+                  Editar
+                </button>
+                <button
+                  disabled={!puedeEliminarCancha}
+                  className={`text-sm md:text-base bg-red-500 hover:bg-red-400 text-white font-bold py-1 px-3 rounded ${
+                    !puedeEditarCancha ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Evita activar el onClick del contenedor
+                    handleEliminarCancha(cancha);
+                  }}
+                >
+                  Eliminar
+                </button>
+              </div>
+            )}
           </div>
         ))
       ) : (
         <div className="">
           <p className="mt-10 text-white text-center font-bold text-2xl">
-            {reservandoTurno ? <> No Existen canchas en el sistema.</>: <> No hay canchas creadas, <button className="underline underline-offset-2 transition-all hover:text-gray-200" onClick={()=> setOpenDrawer(true)}>cargue alguna!</button></>}
+            {reservandoTurno ? (
+              <> No Existen canchas en el sistema.</>
+            ) : (
+              <> No se encontraron canchas. </>
+            )}
           </p>
         </div>
       )}

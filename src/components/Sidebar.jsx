@@ -14,20 +14,82 @@ import {
   InboxIcon,
   PowerIcon,
   ClockIcon,
+  UsersIcon,
+  UserGroupIcon,
+  GlobeAltIcon,
+  UserCircleIcon,
+  ChartBarIcon,
+  RectangleStackIcon
 } from "@heroicons/react/24/solid";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
-  rutaGeneral,
-  rutaGeneralAdmin,
+  rutaAdminTurnos,
+  rutaGestionarCanchas,
+  rutaGestionarGrupos,
   rutaGestionarHorarios,
-  rutaAuthLogout
+  rutaGestionarTurnos,
+  rutaGestionarUsuarios,
+  rutaMiPerfil,
+  rutaReportes,
+  rutaSeleccionarCancha,
 } from "../libs/constantes";
 import { useAuth } from "../context/AuthProvider";
+import { notifyError } from "../libs/funciones";
 
 export function Sidebar() {
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-  const { user, logout, setUser, setIsLoading, setErrorAuth } = useAuth();
+  const { logout, modulos } = useAuth();
   const navigate = useNavigate();
+  console.log(modulos)
+
+  const normalizeModuleName = (name) => name.toLowerCase().replace(/ /g, "-"); // Reemplaza espacios por guiones
+
+  const moduleMap = {
+    "gestionar-usuarios": {
+      route: `${rutaGestionarUsuarios}`,
+      icon: <UsersIcon className="h-5 w-5" />,
+      label: "Usuarios",
+    },
+    "gestionar-horarios": {
+      route: `${rutaGestionarHorarios}`,
+      icon: <ClockIcon className="h-5 w-5" />,
+      label: "Horarios",
+    },
+    "gestionar-grupos": {
+      route: `${rutaGestionarGrupos}`,
+      icon: <UserGroupIcon className="h-5 w-5" />,
+      label: "Grupos",
+    },
+    "gestionar-canchas": {
+      route: `${rutaGestionarCanchas}`,
+      icon: <GlobeAltIcon className="h-5 w-5" />,
+      label: "Canchas",
+    },
+    "gestionar-turnos": {
+      route: `${rutaGestionarTurnos}`,
+      icon: <BookmarkIcon className="h-5 w-5" />,
+      label: "Mis turnos",
+    },
+    "seleccionar-cancha": {
+      route: `${rutaSeleccionarCancha}`,
+      icon: <InboxIcon className="h-5 w-5" />,
+      label: "Reservar turno",
+    },
+    "reportes": {
+      route: `${rutaReportes}`,
+      icon: <ChartBarIcon className="h-5 w-5" />,
+      label: "Reportes",
+    },
+    "administrar-turnos": {
+      route: `${rutaAdminTurnos}`,
+      icon: <RectangleStackIcon className="h-5 w-5" />,
+      label: "Administrar turnos",
+    },
+  };
+
+  const modules = (modulos || []).map((modulo) =>
+    normalizeModuleName(modulo.nombre)
+  );
 
   const openDrawer = () => setIsDrawerOpen(true);
   const closeDrawer = () => setIsDrawerOpen(false);
@@ -39,9 +101,10 @@ export function Sidebar() {
         navigate("/"); // Redirige al login después de cerrar sesión
       }
     } catch (error) {
-      console.log("Hubo un error al desconectarse")
+      console.log(error);
+      notifyError("Hubo un error al desconectarse");
     }
-  }
+  };
 
   return (
     <>
@@ -69,30 +132,26 @@ export function Sidebar() {
             </Typography>
           </div>
           <List>
-            {user?.tipo_usuario === "admin" && (
-              <>
-                <ListItem onClick={() => navigate(rutaGeneralAdmin)}>
-                  <ListItemPrefix>
-                    <InboxIcon className="h-5 w-5" />
-                  </ListItemPrefix>
-                  Canchas
-                </ListItem>
-                <ListItem onClick={() => navigate(rutaGestionarHorarios)}>
-                  <ListItemPrefix>
-                    <ClockIcon className="h-5 w-5" />
-                  </ListItemPrefix>
-                  Horarios
-                </ListItem>
-              </>
-            )}
-            {user?.tipo_usuario === "cliente" && (
-              <ListItem onClick={() => navigate(rutaGeneral)}>
-                <ListItemPrefix>
-                  <BookmarkIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                Turnos
-              </ListItem>
-            )}
+            <ListItem key="mi-perfil" onClick={() => navigate(rutaMiPerfil)}>
+              <ListItemPrefix>
+                <UserCircleIcon className="h-5 w-5" />
+              </ListItemPrefix>
+              Mi perfil
+            </ListItem>
+            {modules.map((module) => {
+              const mappedModule = moduleMap[module];
+              return (
+                mappedModule && (
+                  <ListItem
+                    key={module}
+                    onClick={() => navigate(mappedModule.route)}
+                  >
+                    <ListItemPrefix>{mappedModule.icon}</ListItemPrefix>
+                    {mappedModule.label}
+                  </ListItem>
+                )
+              );
+            })}
             <hr className="my-2 border-blue-gray-50" />
             <ListItem onClick={handleLogout}>
               <ListItemPrefix>

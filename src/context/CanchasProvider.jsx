@@ -14,7 +14,7 @@ export const useCanchas = () => {
   return context;
 };
 
-const CanchasProvider = ({children}) => {
+const CanchasProvider = ({ children }) => {
   const [canchas, setCanchas] = useState([]);
 
   const listadoCanchas = async () => {
@@ -23,47 +23,66 @@ const CanchasProvider = ({children}) => {
       setCanchas(respuestaAxios.data.canchas);
       return;
     } catch (error) {
-      console.log(error)
-      return error
+      console.log(error);
+      return error;
     }
-  }
+  };
 
   useEffect(() => {
     listadoCanchas();
-  }, [])
+  }, []);
 
   const crearCancha = async (cancha) => {
     try {
       const respuestaAxios = await clienteAxios.post(rutaCanchas, cancha);
-      console.log(respuestaAxios)
-      setCanchas(prevCanchas => [...prevCanchas, respuestaAxios.data.cancha]);
+      console.log(respuestaAxios);
+      setCanchas((prevCanchas) => [...prevCanchas, respuestaAxios.data.cancha]);
       return respuestaAxios.data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw error;
     }
-
-  }
+  };
 
   const editarCancha = async (id, cancha) => {
-    console.log(id, cancha)
+    console.log(id, cancha);
     try {
-      const respuestaAxios = await clienteAxios.put(`${rutaCanchas}/${id}`, cancha);
-      const canchasActualizadas = canchas.map( cancha => cancha.id === id ? respuestaAxios.data.cancha : cancha);
+      const respuestaAxios = await clienteAxios.put(
+        `${rutaCanchas}/${id}`,
+        cancha
+      );
+      const canchasActualizadas = canchas.map((cancha) =>
+        cancha.id === id ? respuestaAxios.data.cancha : cancha
+      );
       setCanchas(canchasActualizadas);
       return respuestaAxios;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw error;
     }
-  }
-  
+  };
+
+  const eliminarCancha = async (id) => {
+    try {
+      const respuestaAxios = await clienteAxios.delete(`${rutaCanchas}/${id}`);
+      const canchasActualizadas = canchas.filter(
+        (cancha) => cancha.id !== id
+      );
+      setCanchas(canchasActualizadas);
+      return respuestaAxios.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
 
   return (
-    <CanchasContext.Provider value={{canchas, crearCancha, editarCancha}}>
+    <CanchasContext.Provider
+      value={{ canchas, crearCancha, editarCancha, eliminarCancha }}
+    >
       {children}
     </CanchasContext.Provider>
-  )
-}
+  );
+};
 
-export default CanchasProvider
+export default CanchasProvider;

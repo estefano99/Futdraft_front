@@ -13,8 +13,14 @@ import { SelectHorarios } from "./SelectHorarios";
 import DatePicker from "./DatePicker";
 import { format, parseISO } from "date-fns";
 import { InputHorarios } from "./InputHorarios";
+import {
+  convertTimeToMinutes,
+  notifyError,
+  validarFormatoTiempo,
+} from "../../../libs/funciones";
 
 export function DrawerHorarios({
+  puedeCrearHorario,
   setAlert,
   openDrawer,
   setOpenDrawer,
@@ -68,10 +74,37 @@ export function DrawerHorarios({
     });
   };
   const onSubmit = async (data) => {
-    // Formatea la fecha al formato yyyy-MM-dd
+    // Asegura de que todos los tiempos estén en formato HH:mm:ss
+    const horarioApertura = validarFormatoTiempo(data.horario_apertura);
+    const horarioCierre = validarFormatoTiempo(data.horario_cierre);
+    const duracionTurno = validarFormatoTiempo(data.duracion_turno);
+
+    // Convierte los tiempos a minutos para validación
+    const aperturaFormat = convertTimeToMinutes(horarioApertura);
+    const cierreFormat = convertTimeToMinutes(horarioCierre);
+    const duracionFormat = convertTimeToMinutes(duracionTurno);
+
+    if (aperturaFormat >= cierreFormat) {
+      notifyError(
+        "Error: El horario de apertura debe ser antes que el cierre."
+      );
+      return;
+    }
+
+    if (duracionFormat > cierreFormat - aperturaFormat) {
+      notifyError(
+        "Error: La duración del turno no puede exceder el intervalo disponible."
+      );
+      return;
+    }
+
+    // Formateo el tiempo y fecha solo si no viene en el formato correcto
     const horario = {
       ...data,
       fecha: data.fecha ? format(data.fecha, "yyyy-MM-dd") : "",
+      horario_apertura: horarioApertura,
+      horario_cierre: horarioCierre,
+      duracion_turno: duracionTurno,
     };
 
     try {
@@ -106,7 +139,12 @@ export function DrawerHorarios({
   return (
     <>
       <div className="w-full h-full flex justify-end">
-        <Button color="blue" className="w-1/4 mb-3" onClick={handleOpenDrawer}>
+        <Button
+          disabled={!puedeCrearHorario}
+          color="blue"
+          className={!puedeCrearHorario ? "w-1/4 mb-3 opacity-50 cursor-not-allowed" : "w-1/4 mb-3 "}
+          onClick={handleOpenDrawer}
+        >
           Crear Horario
         </Button>
       </div>
@@ -118,7 +156,7 @@ export function DrawerHorarios({
       >
         <div className="flex items-center justify-between px-4 pb-2">
           <Typography variant="h5" color="blue-gray">
-          {horarioEditar ? "Editar Horario" : "Crear Horario"}
+            {horarioEditar ? "Editar Horario" : "Crear Horario"}
           </Typography>
           <IconButton variant="text" color="blue-gray" onClick={closeDrawer}>
             <svg
