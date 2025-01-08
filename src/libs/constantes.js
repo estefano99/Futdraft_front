@@ -10,7 +10,7 @@ const rutaReportes = `${rutaGeneralAdmin}/reportes`;
 
 // RUTAS CLIENTE FRONT
 const rutaGeneral = "/gestionar-turno";
-const rutaSeleccionarCancha = `${rutaGeneralAdmin}/seleccionar-cancha`;
+const rutaSeleccionarCancha = `${rutaGeneralAdmin}/reservar-turno-cliente`;
 const rutaReservarTurno = `${rutaGeneralAdmin}/reservar-turno`;
 const rutaAdminTurnos = `${rutaGeneralAdmin}/administrar-turnos`;
 

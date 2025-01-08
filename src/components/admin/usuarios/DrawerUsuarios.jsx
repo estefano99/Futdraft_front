@@ -11,6 +11,7 @@ import { useGrupos } from "../../../context/GruposProvider";
 import { SelectEstado } from "../SelectEstado";
 import { notifyError, notifySuccess } from "../../../libs/funciones";
 import { useAuth } from "../../../context/AuthProvider";
+import { set } from "lodash";
 
 export function DrawerUsuarios({
   openDrawer,
@@ -31,6 +32,7 @@ export function DrawerUsuarios({
   } = useAuth();
   const [modulosAccionesAsignadas, setModulosAccionesAsignadas] = useState([]);
   const [gruposAsignados, setGruposAsignados] = useState([]);
+  const [cargando, setCargando] = useState(false);
   const {
     register,
     handleSubmit,
@@ -161,14 +163,18 @@ export function DrawerUsuarios({
     try {
       //Edita el usuario y en el context el useEffect actualiza las acciones
       if (usuarioEditar) {
+        setCargando(true);
         const respuesta = await editarUsuario(usuarioEditar.id, payload);
         setOpenDrawer(false);
         notifySuccess(respuesta.data.message);
+        setCargando(false);
         return;
       }
-
+      //Crea el usuario si no es editar
+      setCargando(true);
       await crearUsuario(payload);
       notifySuccess("Usuario creado exitosamente!");
+      setCargando(false);
       reset({
         nombre: "",
         apellido: "",
@@ -179,6 +185,7 @@ export function DrawerUsuarios({
       });
       setOpenDrawer(false);
     } catch (error) {
+      setCargando(false);
       console.log(error);
       if (error.response && error.response.data && error.response.data.errors) {
         const errorMsg = Object.values(error.response.data.errors)
@@ -431,7 +438,9 @@ export function DrawerUsuarios({
             </ul>
           </div>
 
-          <Button type="submit">Guardar</Button>
+          <Button loading={cargando} type="submit">
+            {cargando ? "Cargando" : "Guardar"}
+          </Button>
         </form>
       </Drawer>
     </>

@@ -4,6 +4,9 @@ import RegisterForm from "../components/cliente/RegisterForm";
 import { AlertColors } from "../components/Alert";
 import { useAuth } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { rutaMiPerfil } from "../libs/constantes";
 
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -12,16 +15,21 @@ const Login = () => {
   const { user, modulos, errorAuth, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!user || !modulos || modulos.length === 0) return; // Solo redirigir si hay usuario y módulos
+    if (isLoading || !user) return;
 
-    // Redirigir al primer módulo disponible
-    const firstModuleRoute = `/dashboard/${modulos[0].nombre
-      .toLowerCase()
-      .replace(/ /g, "-")}`;
-    if (window.location.pathname !== firstModuleRoute) {
-      navigate(firstModuleRoute);
+    if (!modulos || modulos.length === 0) {
+      return; // Detener ejecución si no hay módulos
     }
-  }, [user, modulos, navigate]);
+    
+    navigate(rutaMiPerfil);
+    // Redirigir al primer módulo disponible
+    // const firstModuleRoute = `/dashboard/${modulos[0].nombre
+    //   .toLowerCase()
+    //   .replace(/ /g, "-")}`;
+    // if (window.location.pathname !== firstModuleRoute) {
+    //   navigate(firstModuleRoute);
+    // }
+  }, [user, modulos, navigate, isLoading]);
 
   useEffect(() => {
     let timer;
@@ -69,6 +77,18 @@ const Login = () => {
           setAlert={setAlert}
         />
       )}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

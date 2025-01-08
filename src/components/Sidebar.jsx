@@ -40,7 +40,6 @@ export function Sidebar() {
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const { logout, modulos } = useAuth();
   const navigate = useNavigate();
-  console.log(modulos)
 
   const normalizeModuleName = (name) => name.toLowerCase().replace(/ /g, "-"); // Reemplaza espacios por guiones
 
@@ -70,7 +69,7 @@ export function Sidebar() {
       icon: <BookmarkIcon className="h-5 w-5" />,
       label: "Mis turnos",
     },
-    "seleccionar-cancha": {
+    "reservar-turno-cliente": {
       route: `${rutaSeleccionarCancha}`,
       icon: <InboxIcon className="h-5 w-5" />,
       label: "Reservar turno",
@@ -90,6 +89,8 @@ export function Sidebar() {
   const modules = (modulos || []).map((modulo) =>
     normalizeModuleName(modulo.nombre)
   );
+  // console.log(modulos)
+  // console.log(modules)
 
   const openDrawer = () => setIsDrawerOpen(true);
   const closeDrawer = () => setIsDrawerOpen(false);

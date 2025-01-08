@@ -67,6 +67,7 @@ const AuthProvider = ({ children }) => {
     try {
       const respuestaAxios = await clienteAxios.post(rutaAuthLogin, user);
       const { user: userBack, modulos } = respuestaAxios.data; // Extraer datos del backend.
+      console.log(respuestaAxios)
 
       localStorage.setItem("AUTH_TOKEN", respuestaAxios.data.token);
 

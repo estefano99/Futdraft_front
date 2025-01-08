@@ -22,7 +22,7 @@ const Canchas = ({
   const [canchaEliminar, setCanchaEliminar] = useState(null);
   const { accionesUsuarioDisponibles } = useAuth();
 
-  const [puedeSeleccionarCancha, setPuedeSeleccionarCancha] = useState(false);
+  const [puedeReservarTurno, setPuedeReservarTurno] = useState(false);
   const [puedeEditarCancha, setPuedeEditarCancha] = useState(false);
   const [puedeEliminarCancha, setPuedeEliminarCancha] = useState(false);
 
@@ -47,9 +47,9 @@ const Canchas = ({
 
   useEffect(() => {
     // Calcular permisos para canchas
-    const seleccionarCancha = tienePermiso(
+    const reservarTurno = tienePermiso(
       accionesUsuarioDisponibles,
-      accionesDisponibles.SELECCIONAR_CANCHA
+      accionesDisponibles.RESERVAR_TURNO_CLIENTE
     );
     const editarCancha = tienePermiso(
       accionesUsuarioDisponibles,
@@ -61,7 +61,7 @@ const Canchas = ({
     );
 
     // Actualizar los estados de los permisos
-    setPuedeSeleccionarCancha(seleccionarCancha);
+    setPuedeReservarTurno(reservarTurno);
     setPuedeEditarCancha(editarCancha);
     setPuedeEliminarCancha(eliminarCancha);
   }, [accionesUsuarioDisponibles]);
@@ -79,12 +79,12 @@ const Canchas = ({
         filtroCanchas.map((cancha) => (
           <div
             className={`flex flex-col justify-between h-48 bg-green-700 text-white ${
-              !puedeSeleccionarCancha && reservandoTurno
+              !puedeReservarTurno && reservandoTurno
                 ? "pointer-events-none opacity-50"
                 : "cursor-pointer hover:bg-green-500"
             }`}
             onClick={() => {
-              if (reservandoTurno && puedeSeleccionarCancha)
+              if (reservandoTurno && puedeReservarTurno)
                 handleReservarTurno(cancha);
             }}
             key={cancha.id}

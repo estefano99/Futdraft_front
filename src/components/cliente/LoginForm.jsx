@@ -22,7 +22,9 @@ const LoginForm = ({ isRegister, setIsRegister, setAlert }) => {
     try {
       const respuesta = await login(data);
       if (!respuesta.modulos || respuesta.modulos.length === 0) {
-        notifyError("No tienes permisos asignados para acceder al sistema.");
+        notifyError(
+          "No tienes permisos asignados para acceder al sistema, comunícate con el administrador."
+        );
       }
     } catch (error) {
       const mensajeError =

@@ -6,7 +6,7 @@ export const accionesDisponibles = {
   CREAR_CANCHA: "crear cancha",
   EDITAR_CANCHA: "editar cancha",
   ELIMINAR_CANCHA: "eliminar cancha",
-  SELECCIONAR_CANCHA: "seleccionar cancha", //Este equivale al crear turno, (selecciona cancha, luego el horario y lo crea)
+  RESERVAR_TURNO_CLIENTE: "reservar turno cliente", //Este equivale al crear turno, (selecciona cancha, luego el horario y lo crea)
   EDITAR_TURNO: "editar turno",
   ELIMINAR_TURNO: "eliminar turno",
   CREAR_GRUPO: "crear grupo",
