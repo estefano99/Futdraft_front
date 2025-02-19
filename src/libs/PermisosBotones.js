@@ -22,6 +22,12 @@ export const accionesDisponibles = {
   CREAR_ADMIN_TURNO: "crear admin turno",
   EDITAR_ADMIN_TURNO: "editar admin turno",
   ELIMINAR_ADMIN_TURNO: "eliminar admin turno",
+  CREAR_MANTENIMIENTO: "crear mantenimiento",
+  EDITAR_MANTENIMIENTO: "editar mantenimiento",
+  ELIMINAR_MANTENIMIENTO: "eliminar mantenimiento",
+  CREAR_TAREA: "crear tarea",
+  EDITAR_TAREA: "editar tarea",
+  ELIMINAR_TAREA: "eliminar tarea",
 };
 
 //Retorna true o false para validar los botones del form

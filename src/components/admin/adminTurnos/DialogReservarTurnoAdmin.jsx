@@ -38,7 +38,7 @@ export function DialogReservarTurnoAdmin({
   setSlotInfo,
 }) {
   const { crearReserva } = useReservas();
-  const { usuarios, setUsuarios, listadoUsuariosSinPaginacion } = useAuth();
+  const { setUsuarios, listadoUsuariosSinPaginacion } = useAuth();
   const [options, setOptions] = useState([]);
 
   const handleRealizarReserva = async () => {

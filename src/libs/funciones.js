@@ -21,12 +21,12 @@ const convertTimeToMinutes = (timeString) => {
 
   // Devuelve la duración en minutos
   return timeDuration.asMinutes();
-}
+};
 
 const validarFormatoTiempo = (timeString) => {
   // Verifica si el tiempo ya tiene el formato HH:mm:ss
   const parts = timeString.split(":");
-  
+
   if (parts.length === 3) {
     return timeString; // Ya está en formato HH:mm:ss
   } else if (parts.length === 2) {
@@ -43,14 +43,14 @@ const useDebounceNroCancha = (value, delay) => {
     const handler = setTimeout(() => {
       setDebounceValue(value);
     }, delay);
-  
+
     return () => {
       clearTimeout(handler);
-    }
+    };
   }, [value, delay]);
 
   return debounceValue;
-}
+};
 
 const useDebounceFecha = (value, delay) => {
   const [debounceValue, setDebounceValue] = useState(value);
@@ -59,14 +59,14 @@ const useDebounceFecha = (value, delay) => {
     const handler = setTimeout(() => {
       setDebounceValue(value);
     }, delay);
-  
+
     return () => {
       clearTimeout(handler);
-    }
+    };
   }, [value, delay]);
 
   return debounceValue;
-}
+};
 
 const useDebounceHoraApertura = (value, delay) => {
   const [debounceValue, setDebounceValue] = useState(value);
@@ -75,14 +75,14 @@ const useDebounceHoraApertura = (value, delay) => {
     const handler = setTimeout(() => {
       setDebounceValue(value);
     }, delay);
-  
+
     return () => {
       clearTimeout(handler);
-    }
+    };
   }, [value, delay]);
 
   return debounceValue;
-}
+};
 
 const useDebounce = (value, delay) => {
   const [debounceValue, setDebounceValue] = useState(value);
@@ -91,15 +91,19 @@ const useDebounce = (value, delay) => {
     const handler = setTimeout(() => {
       setDebounceValue(value);
     }, delay);
-  
+
     return () => {
       clearTimeout(handler);
-    }
+    };
   }, [value, delay]);
 
   return debounceValue;
-}
+};
 
+const formatearEstado = (estado) => {
+  if (estado === "en_progreso") return "en progreso";
+  return estado;
+};
 
 export {
   convertTimeToMinutes,
@@ -107,5 +111,6 @@ export {
   useDebounceFecha,
   validarFormatoTiempo,
   useDebounceHoraApertura,
-  useDebounce
-}
+  useDebounce,
+  formatearEstado
+};

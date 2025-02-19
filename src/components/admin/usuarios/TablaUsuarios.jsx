@@ -19,7 +19,7 @@ import { CheckedSwitch } from "../../CheckedSwitch";
 import { ModalVerAcciones } from "./ModalVerAcciones";
 import { useAuth } from "../../../context/AuthProvider";
 import { MenuUsuarios } from "./MenuUsuarios";
-import {ModalVerGrupos} from "./ModalVerGrupos";
+import { ModalVerGrupos } from "./ModalVerGrupos";
 import ModalEliminarUsuario from "./ModalEliminarUsuario";
 import ModalResetearClave from "./ModalResetearClave";
 
@@ -29,6 +29,7 @@ const TABLE_HEAD = [
   "dni",
   "email",
   "telefono",
+  "tipo usuario",
   "estado",
   "acciones",
 ];
@@ -63,7 +64,7 @@ export function TablaUsuarios({ setOpenDrawer, setUsuarioEditar }) {
   const handleClickResetearClave = async (usuario) => {
     setUsuarioResetearClave(usuario);
     setModalResetearClave(true);
-  }
+  };
 
   const handleClickEliminar = async (usuario) => {
     setUsuarioEliminar(usuario);
@@ -71,7 +72,7 @@ export function TablaUsuarios({ setOpenDrawer, setUsuarioEditar }) {
   };
 
   const handleClickEditar = (usuario) => {
-    console.log(usuario)
+    console.log(usuario);
     setUsuarioEditar(usuario);
     setOpenDrawer(true);
   };
@@ -234,7 +235,16 @@ export function TablaUsuarios({ setOpenDrawer, setUsuarioEditar }) {
             ) : usuarios.length > 0 ? (
               usuarios.map(
                 (
-                  { id, nombre, apellido, dni, email, nro_celular, estado },
+                  {
+                    id,
+                    nombre,
+                    apellido,
+                    dni,
+                    email,
+                    nro_celular,
+                    tipo_usuario,
+                    estado,
+                  },
                   index
                 ) => {
                   const isLast = index === usuarios.length - 1;
@@ -249,6 +259,7 @@ export function TablaUsuarios({ setOpenDrawer, setUsuarioEditar }) {
                     dni,
                     email,
                     nro_celular,
+                    tipo_usuario,
                     estado,
                   };
 
@@ -308,6 +319,15 @@ export function TablaUsuarios({ setOpenDrawer, setUsuarioEditar }) {
                             {nro_celular ?? "-"}
                           </Typography>
                         </div>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {String(tipo_usuario)}
+                        </Typography>
                       </td>
                       <td className={classes}>
                         <Typography

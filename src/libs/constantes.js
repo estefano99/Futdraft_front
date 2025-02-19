@@ -7,6 +7,12 @@ const rutaGestionarUsuarios = `${rutaGeneralAdmin}/gestionar-usuarios`;
 const rutaGestionarTurnos = `${rutaGeneralAdmin}/gestionar-turnos`;
 const rutaMiPerfil = `${rutaGeneralAdmin}/mi-perfil`;
 const rutaReportes = `${rutaGeneralAdmin}/reportes`;
+const rutaTipoMantenimiento = `${rutaGeneralAdmin}/tipos-mantenimiento`;
+const rutaMantenimiento = `${rutaGeneralAdmin}/mantenimiento`;
+const rutaTareas = `${rutaGeneralAdmin}/tareas`;
+const rutaAuditoriaLog = `${rutaGeneralAdmin}/auditoria-log`;
+const rutaAuditoriaMantenimiento = `${rutaGeneralAdmin}/auditoria-mantenimiento`;
+const rutaAuditoriaReserva = `${rutaGeneralAdmin}/auditoria-reserva`;
 
 // RUTAS CLIENTE FRONT
 const rutaGeneral = "/gestionar-turno";
@@ -24,6 +30,14 @@ const rutaHorarios = `${rutaGeneralAdminBack}/horarios`;
 const rutaReservas = `${rutaGeneralClienteBack}/reservas`;
 const rutaAdminReservasBack = `${rutaGeneralClienteBack}/reservas/admin-reservas`;
 const rutaHorariosConFechas = `${rutaGeneralAdminBack}/horarios/fechas`;
+const rutaTiposMantenimientoBack = `${rutaGeneralAdminBack}/tipos-mantenimiento`;
+const rutaMantenimientosBack = `${rutaGeneralAdminBack}/mantenimientos`;
+const rutaMantenimientosSinPaginacionBack = `${rutaGeneralAdminBack}/mantenimientos/sin-paginacion`;
+const rutaTareasBack = `${rutaGeneralAdminBack}/tareas`;
+const rutaAuditoriaLogBack = `${rutaGeneralAdminBack}/auditoria-log`;
+const rutaAuditoriaMantenimientoBack = `${rutaGeneralAdminBack}/auditoria-mantenimiento`;
+const rutaAuditoriaReservaBack = `${rutaGeneralAdminBack}/auditoria-reserva`;
+
 //Rutas auth y usuarios
 const rutaAuthLogin = `${rutaGeneralAuthBack}/login`;
 const rutaAuthUser = `${rutaGeneralAuthBack}/user`;
@@ -78,4 +92,17 @@ export {
   rutaAdminReservasBack,
   rutaGetUsuariosSinPaginacion,
   rutaHorariosConFechas,
+  rutaTipoMantenimiento,
+  rutaTiposMantenimientoBack,
+  rutaMantenimientosBack,
+  rutaMantenimiento,
+  rutaTareasBack,
+  rutaTareas,
+  rutaMantenimientosSinPaginacionBack,
+  rutaAuditoriaLog,
+  rutaAuditoriaLogBack,
+  rutaAuditoriaMantenimiento,
+  rutaAuditoriaMantenimientoBack,
+  rutaAuditoriaReserva,
+  rutaAuditoriaReservaBack,
 };

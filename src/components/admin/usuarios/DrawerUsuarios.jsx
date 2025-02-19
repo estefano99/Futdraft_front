@@ -12,6 +12,7 @@ import { SelectEstado } from "../SelectEstado";
 import { notifyError, notifySuccess } from "../../../libs/funciones";
 import { useAuth } from "../../../context/AuthProvider";
 import { set } from "lodash";
+import { SelectTipoUser } from "./SelectTipoUser";
 
 export function DrawerUsuarios({
   openDrawer,
@@ -116,6 +117,7 @@ export function DrawerUsuarios({
         email: usuarioEditar.email,
         nro_celular: usuarioEditar.nro_celular,
         estado: String(usuarioEditar.estado),
+        tipo_usuario: usuarioEditar.tipo_usuario,
       });
     } else {
       // Si es creación, solo carga las acciones sin marcarlas
@@ -128,6 +130,7 @@ export function DrawerUsuarios({
         email: "",
         nro_celular: "",
         estado: "",
+        tipo_usuario: "",
       });
     }
   };
@@ -142,6 +145,7 @@ export function DrawerUsuarios({
       email: "",
       nro_celular: "",
       estado: "",
+      tipo_usuario: "",
     });
   };
 
@@ -182,6 +186,7 @@ export function DrawerUsuarios({
         email: "",
         nro_celular: "",
         estado: "",
+        tipo_usuario: "",
       });
       setOpenDrawer(false);
     } catch (error) {
@@ -358,6 +363,23 @@ export function DrawerUsuarios({
           {errors.estado && (
             <span className="text-red-500 text-sm">
               {errors.estado.message}
+            </span>
+          )}
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Tipo usuario <span className="text-red-300">*</span>
+          </Typography>
+          <Controller
+            name="tipo_usuario"
+            control={control}
+            defaultValue={usuarioEditar ? usuarioEditar.tipo_usuario : ""}
+            rules={{ required: "Tipo usuario es requerido" }}
+            render={({ field }) => (
+              <SelectTipoUser value={field.value} onChange={field.onChange} />
+            )}
+          />
+          {errors.tipo_usuario && (
+            <span className="text-red-500 text-sm">
+              {errors.tipo_usuario.message}
             </span>
           )}
           <Typography variant="h5" color="blue-gray" className="-mb-3">
