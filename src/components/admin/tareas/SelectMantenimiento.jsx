@@ -13,7 +13,6 @@ export function SelectMantenimiento({ value: initialValue, onChange, onBlur }) {
     const obtenerMantenimientos = async () => {
       try {
         const respuesta = await listadoMantenimientosSinPaginacion();
-        console.log(respuesta)
         const mantenimientos = respuesta.filter(
           (mantenimiento) =>
             new Date(mantenimiento.fecha).getTime() >= Date.now()
@@ -50,7 +49,9 @@ export function SelectMantenimiento({ value: initialValue, onChange, onBlur }) {
         <option value="">Selecciona un mantenimiento</option>{" "}
         {mantenimientosFiltrados.map((mantenimiento) => (
           <option key={mantenimiento.id} value={String(mantenimiento.id)}>
-            {`${mantenimiento.descripcion} - ${mantenimiento.fecha} - ${mantenimiento.fecha_fin}`}
+            {`${mantenimiento.descripcion} - ${mantenimiento.fecha} - ${
+              mantenimiento.fecha_fin ?? "No finalizado"
+            }`}
           </option>
         ))}
       </select>

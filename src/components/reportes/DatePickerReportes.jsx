@@ -2,10 +2,16 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import clienteAxios from "../../config/axios";
-import { rutaReportesBack } from "../../libs/constantes";
+import {
+  rutaReportesBack,
+  rutaReportesMantenimientoBack,
+} from "../../libs/constantes";
 import { notifyError } from "../../libs/funciones";
 
-export default function DatePickerReportes({setDataTurnos}) {
+export default function DatePickerReportes({
+  setDataTurnos,
+  setDataMantenimientos,
+}) {
   const [year, setYear] = useState(new Date());
   const handleChange = (date) => {
     setYear(date);
@@ -14,11 +20,31 @@ export default function DatePickerReportes({setDataTurnos}) {
   const consultarData = async () => {
     try {
       const yearFormated = year.getFullYear();
-      const respuestaAxios = await clienteAxios.get(`${rutaReportesBack}?year=${yearFormated}`);
+      const respuestaAxios = await clienteAxios.get(
+        `${rutaReportesBack}?year=${yearFormated}`
+      );
       setDataTurnos(respuestaAxios.data.datos);
     } catch (error) {
       notifyError(
-        error.response?.data?.message || "Error al obtener los datos"
+        error.response?.data?.message ||
+          "Error al obtener los reportes de turnos"
+      );
+      console.log(error);
+    }
+  };
+
+  const consultarDataMantenimientos = async () => {
+    try {
+      const yearFormated = year.getFullYear();
+      const respuestaAxios = await clienteAxios.get(
+        `${rutaReportesMantenimientoBack}?year=${yearFormated}`
+      );
+      console.log(respuestaAxios)
+      setDataMantenimientos(respuestaAxios.data.series);
+    } catch (error) {
+      notifyError(
+        error.response?.data?.message ||
+          "Error al obtener los reportes de mantenimiento"
       );
       console.log(error);
     }
@@ -26,6 +52,7 @@ export default function DatePickerReportes({setDataTurnos}) {
 
   useEffect(() => {
     consultarData();
+    consultarDataMantenimientos();
   }, [year]);
 
   return (

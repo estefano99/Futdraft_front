@@ -63,6 +63,17 @@ const MantenimientoProvider = ({ children }) => {
     }
   };
 
+  const obtenerTareasPorMantenimientoById = async (id) => {
+    try {
+      const respuestaAxios = await clienteAxios.get(
+        `${rutaMantenimientosBack}/${id}`
+      );
+      return respuestaAxios.data.tareas;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const crearMantenimiento = async (mantenimiento) => {
     try {
       const respuestaAxios = await clienteAxios.post(
@@ -125,6 +136,7 @@ const MantenimientoProvider = ({ children }) => {
         crearMantenimiento,
         editarMantenimiento,
         eliminarMantenimiento,
+        obtenerTareasPorMantenimientoById,
       }}
     >
       {children}

@@ -101,7 +101,7 @@ const chartConfig = {
 export default function GraficoBarra({dataTurnos}) {
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader
         floated={false}
         shadow={false}

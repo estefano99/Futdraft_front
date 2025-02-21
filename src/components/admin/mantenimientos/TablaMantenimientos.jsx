@@ -17,7 +17,6 @@ import {
   notifyError,
   useDebounce,
 } from "../../../libs/funciones";
-import { CheckedSwitch } from "../../CheckedSwitch";
 import ModalEliminarMantenimiento from "./ModalEliminarMantenimiento";
 // import { ModalVerAcciones } from "./ModalVerAcciones";
 import {
@@ -28,6 +27,7 @@ import { useAuth } from "../../../context/AuthProvider";
 import { useMantenimiento } from "../../../context/MantenimientosProvider";
 import { estados } from "../../../libs/estados";
 import { ChipColor } from "./ChipColor";
+import { ModalVerTareas } from "./ModalVerTareas";
 
 const TABLE_HEAD = [
   "descripcion",
@@ -40,7 +40,11 @@ const TABLE_HEAD = [
 ];
 
 export function TablaMantenimientos({ setOpenDrawer, setMantenimientoEditar }) {
-  const { mantenimientos, listadoMantenimientos } = useMantenimiento();
+  const {
+    mantenimientos,
+    listadoMantenimientos,
+    obtenerTareasPorMantenimientoById,
+  } = useMantenimiento();
   const { accionesUsuarioDisponibles } = useAuth();
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,14 +54,13 @@ export function TablaMantenimientos({ setOpenDrawer, setMantenimientoEditar }) {
   const [filtrarEstado, setFiltrarEstado] = useState("");
   const [estadoSwitch, setEstadoSwitch] = useState(true);
   const [modal, setModal] = useState(false);
-  const [modalVerAcciones, setModalVerAcciones] = useState(false);
+  const [modalVerTareas, setModalVerTareas] = useState(false);
   const [mantenimientoEliminar, setMantenimientoEliminar] = useState(null);
-  const [accionesGrupo, setAccionesGrupo] = useState([]); //Visualiza las acciones del grupo al clickear en el boton ver acciones
+  const [tareasMantenimiento, setTareasMantenimiento] = useState([]); //Visualiza las tareas de un mantenimiento
   const [puedeEditarMantenimiento, setPuedeEditarMantenimiento] =
     useState(false);
   const [puedeEliminarMantenimiento, setPuedeEliminarMantenimiento] =
     useState(false);
-  const [puedeVerAccionesGrupo, setPuedeVerAccionesGrupo] = useState(false);
 
   //Retrasa la peticion a la api en la escritura de los filtros.
   const debounceDescripcion = useDebounce(filtrarDescripcion, 300);
@@ -74,11 +77,13 @@ export function TablaMantenimientos({ setOpenDrawer, setMantenimientoEditar }) {
     setOpenDrawer(true);
   };
 
-  const handleClickVerAcciones = async (grupo) => {
+  const handleClickVerAcciones = async (mantenimiento) => {
     try {
-      const respuesta = await listadoAccionesGrupoById(grupo, setAccionesGrupo);
-      setAccionesGrupo(respuesta);
-      setModalVerAcciones(true);
+      const respuesta = await obtenerTareasPorMantenimientoById(
+        mantenimiento.id
+      );
+      setTareasMantenimiento(respuesta);
+      setModalVerTareas(true);
     } catch (error) {
       console.log(error);
       notifyError(error.response.data.message);
@@ -150,7 +155,6 @@ export function TablaMantenimientos({ setOpenDrawer, setMantenimientoEditar }) {
     // Actualizar los estados
     setPuedeEditarMantenimiento(puedeEditar);
     setPuedeEliminarMantenimiento(puedeEliminar);
-    setPuedeVerAccionesGrupo(puedeVerAcciones);
   }, [accionesUsuarioDisponibles]);
 
   return (
@@ -162,13 +166,13 @@ export function TablaMantenimientos({ setOpenDrawer, setMantenimientoEditar }) {
           mantenimientoEliminar={mantenimientoEliminar}
         />
       )}
-      {/* {modalVerAcciones && (
-        <ModalVerAcciones
-          modalVerAcciones={modalVerAcciones}
-          setModalVerAcciones={setModalVerAcciones}
-          accionesGrupo={accionesGrupo}
+      {modalVerTareas && (
+        <ModalVerTareas
+          modalVerTareas={modalVerTareas}
+          setModalVerTareas={setModalVerTareas}
+          tareasMantenimiento={tareasMantenimiento}
         />
-      )} */}
+      )}
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="mb-4 flex flex-col flex-wrap justify-around md:flex-row gap-10 ">
           <div className="flex">
@@ -338,7 +342,6 @@ export function TablaMantenimientos({ setOpenDrawer, setMantenimientoEditar }) {
                         <Tooltip content="Ver Acciones">
                           <IconButton
                             variant="text"
-                            disabled={!puedeVerAccionesGrupo}
                             onClick={() =>
                               handleClickVerAcciones(mantenimiento)
                             }

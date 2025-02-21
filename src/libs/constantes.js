@@ -58,6 +58,7 @@ const rutaListadoAccionesGrupoById = `${rutaGeneralAdminBack}/grupos`; //Esta ru
 
 //Ruta reportes
 const rutaReportesBack = `${rutaGeneralClienteBack}/reservas/reportes`;
+const rutaReportesMantenimientoBack = `${rutaGeneralAdminBack}/mantenimientos/reportes`;
 
 export {
   rutaReservarTurno,
@@ -105,4 +106,5 @@ export {
   rutaAuditoriaMantenimientoBack,
   rutaAuditoriaReserva,
   rutaAuditoriaReservaBack,
+  rutaReportesMantenimientoBack,
 };
